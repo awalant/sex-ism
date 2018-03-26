@@ -18,38 +18,57 @@ let canvas = d3.select("#canvas")
 
 //Sets the scale for the radius. Using a square root scale because they are circles, and the domain goes from the min to the max of the data.
 let rScale = d3.scaleSqrt().domain([0, 25526])
-    .range([2, 50]);
+    .range([2, 80]);
 
 //groupedX is a variable for storing the x force of the simulation for when the bubbles are divided into their categories. It places each of the different categories at separate spots on the x axis.
 let groupedX = d3.forceX((d) => {
     if (d.category === "female_anatomy") {
-        return 200;
+        return 150;
     } else if (d.category === "male_anatomy") {
-        return 440;
+        return 420;
     } else if (d.category === "interactions") {
-        return 1160;
+        return 1140;
     } else if (d.category === "female") {
-        return 920;
+        return 900;
     } else {
-        return 680;
+        return 640;
     }
 }).strength(.3);
 
 
+function colors(n){
+    let colors = ["#2870a0",
+"#830534",
+"#E39423",
+"#c9afaf",
+"#454858"];
+    return colors[n%colors.length];
+} 
+
 //centralX is a variable for storing the x force of the simulation for when the bubbles are meant to be clumped in the center of the canvas together.
-let centralX = d3.forceX(600).strength(.05);
+let centralX = d3.forceX(600).strength(.08);
 
 //dontTouchMe is a variable for setting the distance between each bubble. It uses the same calculation for the radius (above) and adds 2 px to it.
 let dontTouchMe = d3.forceCollide((d) => {
     return rScale(d.occurances) + 2;
 });
 
+//function from Jim Vallandingham, http://vallandingham.me//bubble_charts_with_d3v4.html
+//it basically says to ????
+ function charge(d) {
+    return -Math.pow(d.radius, 2.0) * .8;
+  }
+
 //A force simulation for when the bubbles first load. They all start in the center.
 let sim = d3.forceSimulation()
-    .force("centralX", centralX)
+    .force("forceX", d3.forceX(width/2).strength(.05))
     .force("centralY", d3.forceY(height / 2).strength(.05))
     .force("dontTouchMe", dontTouchMe)
-.restart();
+.force("charge", d3.forceManyBody().strength(charge));
+
+
+
+
 
 //Everything that uses the data goes here:
 
@@ -67,16 +86,23 @@ let data = d3.csv("data/the_data.csv", (error, pornData) => {
         .attr("r", (d) => {
             return rScale(d.occurances);
         })
-        .attr("fill", "blue")
+        .attr("fill", (d,i)=>{
+            return colors(i);
+        })
         .on("click", (d) => {
             console.log(d)
         });
 
+    
+    pornData.forEach((d)=>{
+        d.x=width/2;
+        d.y=height/2;
+    });
 
     //when the button for term is clicked, it (should) force the bubbles back to the center.
     d3.select("#term").on("click", () => {
         sim
-            .force("centralX", centralX)
+            .force("forceX", centralX)
             .alphaTarget(.05)
             .restart();
     });
@@ -84,7 +110,7 @@ let data = d3.csv("data/the_data.csv", (error, pornData) => {
     //when the button for categories is clicked, it should spread the groups apart from one another.
     d3.select("#cat").on("click", () => {
         sim
-            .force("groupedX", groupedX)
+            .force("forceX", groupedX)
             .alphaTarget(0.05)
             .restart();
     });
