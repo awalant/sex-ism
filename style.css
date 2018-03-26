@@ -1,4 +1,100 @@
+header {
+    font-family: 'Share Tech', sans-serif;
+    display: flex;
+    font-size: 2em; 
+}
+
+.heading{
+    position:absolute;
+    margin-left: 1.5em;
+}
+
+.grouping{
+    display: flex;
+    flex-flow: column;
+    width: 3em;
+    margin-left: 6em;
+}
+
+.justTheTip {
+    font-family: 'Roboto', sans-serif;
+    font-size: .75em;
+    line-height: 1.25;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border-radius: 4px;
+    pointer-events: none;
+
+}
+
+.justTheTip::after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    content: "\25BC";
+    pointer-events: none;
+    text-align: center;
+}
+
+.justTheTip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+body {
+    background-color: #967e7e;
+    /*    background-color: #fff2f2;*/
+}
+
+button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color:#fff;
+    font-family: font-family: 'Roboto', sans-serif;
+    padding-left:.75em;
+    padding-right:.75em;
+    height: 3em;
+    border-radius: 2px;
+    margin:.25em;
+}
+
+button:hover{
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+button:active{
+    
+}
+
+.info{
+    color:#fdcb65;
+}
+
+#readMore{
+    margin-left:60em;
+    top:3em;
+}
+
+#about{
+    font-family: font-family: 'Roboto', sans-serif;
+    margin-left: 10em;
+    width: 60em;
+}
+
+a:link, a:visited{
+    text-decoration: none;
+    color:#fff;
+    font-family: font-family: 'Roboto', sans-serif;
+}
+
 /*
-#canvas {
-    background-color: aqua;
+.terms:hover{
+    outline-color: white;
+    outline-width: 2px;
 }*/

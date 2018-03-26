@@ -8,12 +8,19 @@ Data from http://sexualitics.github.io/ */
 let width = 1200;
 let height = 600;
 
+ let tip = d3.tip().attr("class", "justTheTip")
+        .html((d) => {
+            let text = "Term: <span class='info'>" + d.term + "</span><br>";
+           text += "Occurances: <span class='info'>" + d.occurances + "</span><br>";
+            return text;
+        });
 //Attaches an SVG canvas to the div id canvas. leaves the chart starting at the top left of the window and attaches a group to it.
 let canvas = d3.select("#canvas")
     .append("svg")
     .attr("height", height)
     .attr("width", width)
     .append("g")
+    .call(tip)
     .attr("transform", "translate(0,0)");
 
 //Sets the scale for the radius. Using a square root scale because they are circles, and the domain goes from the min to the max of the data.
@@ -25,28 +32,16 @@ let groupedX = d3.forceX((d) => {
     if (d.category === "female_anatomy") {
         return 150;
     } else if (d.category === "male_anatomy") {
-        return 420;
+        return 400;
     } else if (d.category === "interactions") {
-        return 1140;
+        return 1120;
     } else if (d.category === "female") {
-        return 900;
-    } else {
         return 640;
+    } else {
+        return 885;
     }
 }).strength(.3);
 
-let colors;
-
-
-
-//function colors(n){
-//    let colors = ["#2870a0",
-//"#830534",
-//"#E39423",
-//"#c9afaf",
-//"#454858"];
-//    return colors[n%colors.length];
-//} 
 
 //centralX is a variable for storing the x force of the simulation for when the bubbles are meant to be clumped in the center of the canvas together.
 let centralX = d3.forceX(600).strength(.08);
@@ -68,8 +63,6 @@ let sim = d3.forceSimulation()
     .force("centralY", d3.forceY(height / 2).strength(.05))
     .force("dontTouchMe", dontTouchMe)
     .force("charge", d3.forceManyBody().strength(charge));
-
-
 
 
 
@@ -110,11 +103,15 @@ let data = d3.csv("data/the_data.csv", (error, pornData) => {
                 return "#830534";
             } else if (d.category === "interactions") {
                 return "#E39423";
-            } 
+            }
         })
         .on("click", (d) => {
             console.log(d)
-        });
+        })
+        .on("mouseover", tip.show)
+        .on("mouseout", tip.hide);
+
+
 
 
     //when the button for term is clicked, it (should) force the bubbles back to the center.
