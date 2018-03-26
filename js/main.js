@@ -35,15 +35,18 @@ let groupedX = d3.forceX((d) => {
     }
 }).strength(.3);
 
+let colors;
 
-function colors(n){
-    let colors = ["#2870a0",
-"#830534",
-"#E39423",
-"#c9afaf",
-"#454858"];
-    return colors[n%colors.length];
-} 
+
+
+//function colors(n){
+//    let colors = ["#2870a0",
+//"#830534",
+//"#E39423",
+//"#c9afaf",
+//"#454858"];
+//    return colors[n%colors.length];
+//} 
 
 //centralX is a variable for storing the x force of the simulation for when the bubbles are meant to be clumped in the center of the canvas together.
 let centralX = d3.forceX(600).strength(.08);
@@ -55,16 +58,16 @@ let dontTouchMe = d3.forceCollide((d) => {
 
 //function from Jim Vallandingham, http://vallandingham.me//bubble_charts_with_d3v4.html
 //it basically says to ????
- function charge(d) {
+function charge(d) {
     return -Math.pow(d.radius, 2.0) * .8;
-  }
+}
 
 //A force simulation for when the bubbles first load. They all start in the center.
 let sim = d3.forceSimulation()
-    .force("forceX", d3.forceX(width/2).strength(.05))
+    .force("forceX", d3.forceX(width / 2).strength(.05))
     .force("centralY", d3.forceY(height / 2).strength(.05))
     .force("dontTouchMe", dontTouchMe)
-.force("charge", d3.forceManyBody().strength(charge));
+    .force("charge", d3.forceManyBody().strength(charge));
 
 
 
@@ -74,9 +77,19 @@ let sim = d3.forceSimulation()
 
 //Converts the data from a csv and gives it the temporary variable pornData. 
 let data = d3.csv("data/the_data.csv", (error, pornData) => {
-    
+
     //if there is an error, this will be a notification
     if (error) throw error;
+
+
+    pornData.forEach((d) => {
+        d.category = d.category;
+        d.term = d.term;
+        d.occurances = +d.occurances;
+        d.x = width / 2;
+        d.y = height / 2;
+    });
+
 
     //Puts the circles in the body of index.html and uses the pornData to apply to each circle. It initializes it, each one getting a circle, gives them the class .terms, and says that for each instance of a circle the radius will be determined by the rScale and how many times the word was used. They are filled blue, and when they are clicked on they return the data of that instance to the console.
     let circles = canvas.selectAll("body")
@@ -86,18 +99,23 @@ let data = d3.csv("data/the_data.csv", (error, pornData) => {
         .attr("r", (d) => {
             return rScale(d.occurances);
         })
-        .attr("fill", (d,i)=>{
-            return colors(i);
+        .attr("fill", (d, i) => {
+            if (d.category === "female_anatomy") {
+                return "#c9afaf";
+            } else if (d.category === "male_anatomy") {
+                return "#2870a0";
+            } else if (d.category === "male") {
+                return "#454858";
+            } else if (d.category === "female") {
+                return "#830534";
+            } else if (d.category === "interactions") {
+                return "#E39423";
+            } 
         })
         .on("click", (d) => {
             console.log(d)
         });
 
-    
-    pornData.forEach((d)=>{
-        d.x=width/2;
-        d.y=height/2;
-    });
 
     //when the button for term is clicked, it (should) force the bubbles back to the center.
     d3.select("#term").on("click", () => {
