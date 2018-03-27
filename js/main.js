@@ -112,8 +112,6 @@ let data = d3.csv("data/the_data.csv", (error, pornData) => {
         .on("mouseout", tip.hide);
 
 
-
-
     //when the button for term is clicked, it (should) force the bubbles back to the center.
     d3.select("#term").on("click", () => {
         sim
