@@ -119,17 +119,13 @@ footer{
     bottom: 0;
     padding-left: 12em;
     padding-top: 1em;
+    display: flex;
 }
 
 footer:hover{
     background-color:rgba(0,0,0,0.2);
 }
 
-.textLabel{
-
+.acknwldgmt{
+    margin-left: 680px;
 }
-/*
-.terms:hover{
-    outline-color: white;
-    outline-width: 2px;
-}*/
